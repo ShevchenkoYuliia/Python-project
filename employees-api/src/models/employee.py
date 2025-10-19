@@ -1,10 +1,10 @@
-
 from pydantic import BaseModel, Field
 from uuid import uuid4
 from typing import List, Optional
 from uuid import UUID
 
 from uuid import UUID, uuid4
+
 
 class Employee(BaseModel):
     id: UUID = Field(default_factory=uuid4)
@@ -27,11 +27,13 @@ class EmployeeService:
         return self.employees
     def get_employee(self, employee_id: UUID) -> Optional[Employee]:
         return next((employee for employee in self.employees if employee.id == employee_id), None)
-    def update_employee(self, employee_id: UUID, updated_employee: Employee) -> Optional[Employee]:
-        for idx, employee in enumerate(self.employees):
-            if employee.id == employee_id:
-                self.employees[idx] = updated_employee
-                return updated_employee
+    def update_employee(self, employee_id: UUID, firstName: str, lastName: str, age: int) -> Optional[Employee]:
+        for e in self.employees:
+            if e.id == employee_id:
+                e.firstName = firstName
+                e.lastName = lastName
+                e.age = age
+                return e
         return None
     def delete_employee(self, employee_id: UUID) -> bool:
         for idx, employee in enumerate(self.employees):
@@ -39,5 +41,8 @@ class EmployeeService:
                 del self.employees[idx]
                 return True
         return False
+    
+employee_service = EmployeeService()
+
 def get_employee_service() -> EmployeeService:   
-    return EmployeeService()
+    return employee_service
